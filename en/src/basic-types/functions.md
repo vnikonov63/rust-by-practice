@@ -12,8 +12,8 @@ fn main() {
     println!("Success!");
 }
 
-fn sum(x, y: i32) {
-    x + y;
+fn sum(x: i32, y: i32) -> i32 {
+    x + y
 }
 ```
 
@@ -25,7 +25,7 @@ fn main() {
 }
 
 // Replace i32 with another type
-fn print() -> i32 {
+fn print() -> () {
    println!("Success!");
 }
 ```
@@ -42,9 +42,15 @@ fn main() {
     println!("Failed!");
 }
 
+use std::thread;
+use std::time;
+
 fn never_return() -> ! {
     // Implement this function, don't modify the fn signatures
-    
+    loop {
+      println!("Another useless iteration");
+      thread::sleep(time::Duration::from_secs(1))
+  }
 }
 ```
 
@@ -61,20 +67,22 @@ fn main() {
 fn get_option(tp: u8) -> Option<i32> {
     match tp {
         1 => {
-            // TODO
+            return Some(1);
         }
         _ => {
-            // TODO
+            never_return_fn()
         }
     };
     
     // Rather than returning a None, we use a diverging function instead
+    // “this code never produces a value anyway.” 
+    // So it is acceptable in a place where Option<i32> is expected.
     never_return_fn()
 }
 
 // IMPLEMENT this function in THREE ways
 fn never_return_fn() -> ! {
-    
+  panic!("NEVER TYPE");    
 }
 ```
 
@@ -83,7 +91,7 @@ fn never_return_fn() -> ! {
 
 fn main() {
     // FILL in the blank
-    let b = __;
+    let b = false;
 
     let _v = match b {
         true => 1,
