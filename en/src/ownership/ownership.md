@@ -6,7 +6,7 @@
 fn main() {
     // Use as many approaches as you can to make it work
     let x = String::from("Hello world");
-    let y = x;
+    let y = x.as_str();
     println!("{}, {}",x, y);
 }
 ```
@@ -22,8 +22,9 @@ fn main() {
 }
 
 // Only modify the code below!
-fn take_ownership(s: String) {
-    println!("{}", s);
+fn take_ownership(s: String) -> String {
+    s
+    // println!("{}", s);
 }
 ```
 
@@ -38,9 +39,10 @@ fn main() {
 
 // Only modify the code below!
 fn give_ownership() -> String {
-    let s = String::from("Hello world");
-    // Convert String to Vec
-    let _s = s.into_bytes();
+    let s = String::from("Hello World");
+    // convert String to Vec
+    // important that .into_bytes() consumes the String and the .as_bytes() provides a slice, so there is no consumption.
+    let _s = s.as_bytes();
     s
 }
 ```
@@ -51,22 +53,24 @@ fn give_ownership() -> String {
 fn main() {
     let s = String::from("Hello World");
 
-    print_str(s);
+    print_str(&s);
 
     println!("{}", s);
 }
 
-fn print_str(s: String)  {
+fn print_str(s: &String)  {
     println!("{}",s)
 }
 ```
 
 5. 🌟🌟 
 ```rust,editable
-// Don't use clone ,use copy instead
+// Don't use clone, use copy instead
+
+// Remember, it is important to remember that String does not implement the copy trait. 
 fn main() {
-    let x = (1, 2, (), "hello".to_string());
-    let y = x.clone();
+    let x = (1, 2, (), "hello");
+    let y = x;
     println!("{:?}, {:?}", x, y);
 }
 ```
@@ -81,7 +85,7 @@ Mutability can be changed when ownership is transferred.
 fn main() {
     let s = String::from("Hello ");
     
-    let s1 = s;
+    let mut s1 = s;
 
     s1.push_str("World!");
 
@@ -95,7 +99,7 @@ fn main() {
 fn main() {
     let x = Box::new(5);
     
-    let ...      // update this line, don't change other lines!
+    let mut y = Box::new(9);      // update this line, don't change other lines!
     
     *y = 4;
     
@@ -146,7 +150,7 @@ fn main() {
 fn main() {
    let t = (String::from("hello"), String::from("world"));
 
-   let _s = t.0;
+   let (ref _s1, ref _s2) = t; 
 
    // Modify this line only, don't use `_s`
    println!("{:?}", t);
@@ -160,7 +164,7 @@ fn main() {
    let t = (String::from("hello"), String::from("world"));
 
     // Fill the blanks
-    let (__, __) = __;
+    let (ref s1, ref s2) = t;
 
     println!("{:?}, {:?}, {:?}", s1, s2, t); // -> "hello", "world", ("hello", "world")
 }
