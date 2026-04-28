@@ -6,7 +6,7 @@
 
 // Fix the error below with least amount of modification to the code
 fn main() {
-    let x: i32; // Uninitialized but used, ERROR !
+    let x: i32 = 5; // Uninitialized but used, ERROR !
     let y: i32; // Uninitialized but also unused, only a Warning !
 
     assert_eq!(x, 5);
@@ -19,8 +19,8 @@ fn main() {
 
 // Fill the blanks in the code to make it compile
 fn main() {
-    let __ __ = 1;
-    __ += 2; 
+    let mut x = 1;
+    x += 2; 
     
     assert_eq!(x, 3);
     println!("Success!");
@@ -35,9 +35,10 @@ A scope is the range within the program for which the item is valid.
 
 // Fix the error below with least amount of modification
 fn main() {
-    let x: i32 = 10;
+    let x: i32 = 20;
+    let y: i32 = 10;
     {
-        let y: i32 = 5;
+        let x: i32 = 15;
         println!("Inner scope value of x is {} and value of y is {}", x, y);
     }
     println!("Outer scope value of x is {} and value of y is {}", x, y); 
@@ -49,11 +50,12 @@ fn main() {
 
 // Fix the error with the use of define_x
 fn main() {
-    println!("{}, world", x); 
+    define_x();
 }
 
 fn define_x() {
     let x = "hello";
+    println!("{}, world", x); 
 }
 ```
 
@@ -68,10 +70,10 @@ fn main() {
     let x: i32 = 5;
     {
         let x = 12;
-        assert_eq!(x, 5);
+        assert_eq!(x, 12);
     }
 
-    assert_eq!(x, 12);
+    assert_eq!(x, 5);
 
     let x = 42;
     println!("{}", x); // Prints "42".
@@ -87,7 +89,6 @@ fn main() {
     x = 7;
     // Shadowing and re-binding
     let x = x; 
-    x += 3;
 
 
     let y = 4;
@@ -109,7 +110,7 @@ fn main() {
 ```rust,editable
 
 fn main() {
-    let x = 1; 
+    let _x = 1; 
 }
 
 // Warning: unused variable: `x`
@@ -124,7 +125,7 @@ fn main() {
 
 // Fix the error below with least amount of modification
 fn main() {
-    let (x, y) = (1, 2);
+    let (mut x, y) = (1, 2);
     x += 2;
 
     assert_eq!(x, 3);
@@ -146,9 +147,9 @@ Introduced in Rust 1.59: You can now use tuple, slice, and struct patterns as th
 fn main() {
     let (x, y);
     (x,..) = (3, 4);
-    [.., y] = [1, 2];
+    [.., y] = [1,  2];
     // Fill the blank to make the code work
-    assert_eq!([x,y], __);
+    assert_eq!([x,y], [3, 2]);
 
     println!("Success!");
 } 
