@@ -9,7 +9,7 @@ The type of string literal `"hello, world"` is `&str`, e.g `let s: &str = "hello
 
 // Fix error without adding new line
 fn main() {
-    let s: str = "hello, world";
+    let s: &str = "hello, world";
 
     println!("Success!");
 }
@@ -23,7 +23,8 @@ fn main() {
 // Fix the error with at least two solutions
 fn main() {
     let s: Box<str> = "hello, world".into();
-    greetings(s)
+    // greetings(s.as_ref())
+    greetings(&*s);
 }
 
 fn greetings(s: &str) {
@@ -39,7 +40,7 @@ fn greetings(s: &str) {
 
 // Fill the blank
 fn main() {
-    let mut s = __;
+    let mut s = String::new();
     s.push_str("hello, world");
     s.push('!');
 
@@ -54,10 +55,10 @@ fn main() {
 
 // Fix all errors without adding newline
 fn main() {
-    let s = String::from("hello");
+    let mut s = String::from("hello");
     s.push(',');
-    s.push(" world");
-    s += "!".to_string();
+    s.push_str(" world");
+    s.push('!');
 
     println!("{}", s);
 }
@@ -70,7 +71,7 @@ fn main() {
 fn main() {
     let s = String::from("I like dogs");
     // Allocate new memory and store the modified string there
-    let s1 = s.__("dogs", "cats");
+    let s1 = s.replace("dogs", "cats");
 
     assert_eq!(s1, "I like cats");
 
@@ -88,9 +89,10 @@ More `String` methods can be found under [String](https://doc.rust-lang.org/std/
 fn main() {
     let s1 = String::from("hello,");
     let s2 = String::from("world!");
-    let s3 = s1 + s2; 
+    let s3 = s1.clone() + &s2; 
     assert_eq!(s3, "hello,world!");
     println!("{}", s1);
+    println!("{}", s2);
 }
 ```
 
@@ -103,7 +105,7 @@ Opposite to the seldom using of `str`, `&str` and `String` are used everywhere!
 // Fix error with at least two solutions
 fn main() {
     let s = "hello, world";
-    greetings(s)
+    greetings(s.to_string())
 }
 
 fn greetings(s: String) {
@@ -118,7 +120,7 @@ fn greetings(s: String) {
 // Use two approaches to fix the error and without adding a new line
 fn main() {
     let s = "hello, world".to_string();
-    let s1: &str = s;
+    let s1: String = s;
 
     println!("Success!");
 }
@@ -130,7 +132,7 @@ fn main() {
 fn main() {
     // You can use escapes to write bytes by their hexadecimal values
     // Fill the blank below to show "I'm writing Rust"
-    let byte_escape = "I'm writing Ru\x73__!";
+    let byte_escape = "I'm writing Ru\x73\x74!";
     println!("What are you doing\x3F (\\x3F means ?) {}", byte_escape);
 
     // ...Or Unicode code points.
@@ -154,7 +156,7 @@ fn main() {
 
 /* Fill in the blank and fix the errors */
 fn main() {
-    let raw_str = r"Escapes don't work here: \x3F \u{211D}";
+    let raw_str = "Escapes don't work here: \x3F \u{211D}";
     // Modify above line to make it work
     assert_eq!(raw_str, "Escapes don't work here: ? ℝ");
 
@@ -168,7 +170,7 @@ fn main() {
     println!("{}", delimiter);
 
     // Fill the blank
-    let long_delimiter = __;
+    let long_delimiter = r###"Hello, "##""###;
     assert_eq!(long_delimiter, "Hello, \"##\"");
 
     println!("Success!");
@@ -228,10 +230,10 @@ A more detailed listing of the ways to write string literals and escape characte
 
 fn main() {
     let s1 = String::from("hi,中国");
-    let h = s1[0]; // Modify this line to fix the error, tips: `h` only takes 1 byte in UTF8 format
+    let h = &s1[0..1]; // Modify this line to fix the error, tips: `h` only takes 1 byte in UTF8 format
     assert_eq!(h, "h");
 
-    let h1 = &s1[3..5]; // Modify this line to fix the error, tips: `中`  takes 3 bytes in UTF8 format
+    let h1 = &s1[3..=5]; // Modify this line to fix the error, tips: `中`  takes 3 bytes in UTF8 format
     assert_eq!(h1, "中");
 
     println!("Success!");
@@ -244,7 +246,7 @@ fn main() {
 
 fn main() {
     // Fill the blank to print each char in "你好，世界"
-    for c in "你好，世界".__ {
+    for c in "你好，世界".chars() {
         println!("{}", c)
     }
 }
