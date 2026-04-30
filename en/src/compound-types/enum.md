@@ -18,16 +18,16 @@ enum Number1 {
 
 // C-like enum
 enum Number2 {
-    Zero = 0.0,
-    One = 1.0,
-    Two = 2.0,
+    Zero = 0,
+    One = 1,
+    Two = 2,
 }
 
 
 fn main() {
     // An enum variant can be converted to a integer by `as`
-    assert_eq!(Number::One, Number1::One);
-    assert_eq!(Number1::One, Number2::One);
+    assert_eq!(Number::One as u8, Number1::One as u8);
+    assert_eq!(Number1::One as u8, Number2::One as u8);
 
     println!("Success!");
 } 
@@ -45,8 +45,8 @@ enum Message {
 }
 
 fn main() {
-    let msg1 = Message::Move{__}; // Instantiating with x = 1, y = 2 
-    let msg2 = Message::Write(__); // Instantiating with "hello, world!"
+    let msg1 = Message::Move{x : 1, y : 2}; // Instantiating with x = 1, y = 2 
+    let msg2 = Message::Write(String::from("hello, world!")); // Instantiating with "hello, world!"
 
     println!("Success!");
 } 
@@ -64,9 +64,9 @@ enum Message {
 }
 
 fn main() {
-    let msg = Message::Move{x: 1, y: 2};
+    let msg = Message::Move{x: 1, y: 1};
 
-    if let Message::Move{__} = msg {
+    if let Message::Move{x: a, y: b} = msg {
         assert_eq!(a, b);
     } else {
         panic!("NEVER LET THIS RUN！");
@@ -81,6 +81,7 @@ fn main() {
 ```rust,editable
 
 // Fill in the blank and fix the errors
+#[derive(Debug)]
 enum Message {
     Quit,
     Move { x: i32, y: i32 },
@@ -89,7 +90,7 @@ enum Message {
 }
 
 fn main() {
-    let msgs: __ = [
+    let msgs: [Message; 3] = [
         Message::Quit,
         Message::Move{x:1, y:3},
         Message::ChangeColor(255,255,0)
@@ -101,7 +102,7 @@ fn main() {
 } 
 
 fn show_message(msg: Message) {
-    println!("{}", msg);
+    println!("{:?}", msg);
 }
 ```
 
@@ -113,12 +114,14 @@ fn show_message(msg: Message) {
 fn main() {
     let five = Some(5);
     let six = plus_one(five);
-    let none = plus_one(None);
+    let _none = plus_one(None);
 
-    if let __ = six {
+    if let Some(n) = six {
         println!("{}", n);
 
         println!("Success!");
+
+        return;
     } 
         
     panic!("NEVER LET THIS RUN！");
@@ -126,8 +129,8 @@ fn main() {
 
 fn plus_one(x: Option<i32>) -> Option<i32> {
     match x {
-        __ => None,
-        __ => Some(i + 1),
+        None => None,
+        Some(i) => Some(i + 1),
     }
 }
 ```
@@ -155,7 +158,7 @@ impl List {
     }
 
     // Consume a list, and return the same list with a new element at its front
-    fn prepend(self, elem: u32) -> __ {
+    fn prepend(self, elem: u32) -> List {
         // `Cons` also has type List
         Cons(elem, Box::new(self))
     }
@@ -181,10 +184,10 @@ impl List {
     // Return representation of the list as a (heap allocated) string
     fn stringify(&self) -> String {
         match *self {
-            Cons(head, __ tail) => {
+            Cons(head, ref tail) => {
                 // `format!` is similar to `print!`, but returns a heap
                 // allocated string instead of printing to the console
-                format!("{}, {}", head, tail.__())
+                format!("{}, {}", head, tail.stringify())
             },
             Nil => {
                 format!("Nil")
