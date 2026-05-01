@@ -125,7 +125,9 @@ struct Rectangle {
 
 impl Rectangle {
     // Complete the area method which return the area of a Rectangle.
-    fn area
+    fn area(&self) -> u32 {
+      self.width * self.height
+  }
 }
 
 fn main() {
@@ -147,8 +149,8 @@ struct TrafficLight {
 }
 
 impl TrafficLight {
-    pub fn show_state(__)  {
-        println!("the current state is {}", __.color);
+    pub fn show_state(&self)  {
+        println!("the current state is {}", self.color);
     }
 }
 fn main() {
@@ -169,12 +171,12 @@ struct TrafficLight {
 
 impl TrafficLight {
     // Using `Self` to fill in the blank.
-    pub fn show_state(__)  {
+    pub fn show_state(self: &Self)  {
         println!("the current state is {}", self.color);
     }
 
     // Fill in the blank, DON'T use any variants of `Self`.
-    pub fn change_state(__) {
+    pub fn change_state(&mut self) {
         self.color = "green".to_string()
     }
 }
@@ -198,7 +200,11 @@ impl TrafficLight {
     // 1. Implement an associated function `new`,
     // 2. It will return a TrafficLight contains color "red"
     // 3. Must use `Self`, DONT use `TrafficLight` in fn signatures or body
-    pub fn new() 
+    pub fn new() -> Self {
+      Self {
+      color: String::from("red"),
+      }
+    }
 
     pub fn get_state(&self) -> &str {
         &self.color
@@ -224,15 +230,16 @@ struct Rectangle {
 
 // Using multiple `impl` blocks to rewrite the code below.
 impl Rectangle {
-    fn area(&self) -> u32 {
-        self.width * self.height
-    }
-
     fn can_hold(&self, other: &Rectangle) -> bool {
         self.width > other.width && self.height > other.height
     }
 }
 
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
 
 fn main() {
     println!("Success!");
@@ -253,7 +260,13 @@ enum TrafficLightColor {
 
 // Implement TrafficLightColor with a method.
 impl TrafficLightColor {
-    
+  fn color(&self) -> &str {
+    match self {
+      TrafficLightColor::Red => "red"
+      TrafficLightColor::Yellow => "yellow"
+      TrafficLightColor::Green => "green"
+    }
+  }
 }
 
 fn main() {
