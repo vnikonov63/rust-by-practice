@@ -93,9 +93,21 @@ trait Hello {
 
 struct Student {}
 impl Hello for Student {
+  fn say_something(&self) -> String {
+      String::from("I'm a good student")
+  }  
 }
+
 struct Teacher {}
 impl Hello for Teacher {
+    fn say_hi(&self) -> String {
+      String::from("Hi, I'm your new teacher")
+    }
+
+    fn say_something(&self) -> String {
+      String::from("I'm not a bad teacher")
+    }
+
 }
 
 fn main() {
@@ -136,6 +148,7 @@ impl Inches {
 
 // ADD some attributes to make the code work!
 // DON'T modify other code!
+#[derive(Debug, PartialEq, PartialOrd)]
 struct Seconds(i32);
 
 fn main() {
@@ -174,7 +187,9 @@ use std::ops;
 // Implement fn multiply to make the code work.
 // As mentioned above, `+` needs `T` to implement `std::ops::Add` Trait.
 // So, what about `*`?  You can find the answer here: https://doc.rust-lang.org/core/ops/
-fn multiply
+fn multiply<T: ops::Mul<Output=T>>(a: T, b: T) -> T {
+    a * b
+}
 
 fn main() {
     assert_eq!(6, multiply(2u8, 3u8));
@@ -192,9 +207,9 @@ use std::ops;
 
 struct Foo;
 struct Bar;
-
+#[derive(PartialEq, Debug)]
 struct FooBar;
-
+#[derive(PartialEq, Debug)]
 struct BarFoo;
 
 // The `std::ops::Add` trait is used to specify the functionality of `+`.
@@ -208,10 +223,10 @@ impl ops::Add<Bar> for Foo {
     }
 }
 
-impl ops::Sub<Foo> for Bar {
+impl ops::Sub<Bar> for Foo {
     type Output = BarFoo;
 
-    fn sub(self, _rhs: Foo) -> BarFoo {
+    fn sub(self, _rhs: Bar) -> BarFoo {
         BarFoo
     }
 }
@@ -274,11 +289,18 @@ fn main() {
         content: "Weibo seems to be worse than Tweet".to_string(),
     };
 
-    summary(post);
-    summary(weibo);
+    let ps = summary(&post);
+    let ws = summary(&weibo);
+
+    println!("{}", ps);
+    println!("{}", ws);
 
     println!("{:?}", post);
     println!("{:?}", weibo);
+}
+
+fn summary(input: &impl Summary) -> String {
+    input.summarize()
 }
 
 // Implement `fn summary` below.
@@ -318,7 +340,7 @@ fn random_animal(random_number: f64) -> impl Animal {
     if random_number < 0.5 {
         Sheep {}
     } else {
-        Cow {}
+        Sheep {}
     }
 }
 
@@ -336,13 +358,22 @@ When working with generics, the type parameters often must use traits as bounds 
 
 7. 🌟🌟
 ```rust,editable
+use std::ops;
 fn main() {
     assert_eq!(sum(1, 2), 3);
+    println!("Success!")
 }
 
 // Implement `fn sum` with trait bound in two ways.
-fn sum<T>(x: T, y: T) -> T {
-    x + y
+// fn sum<T: ops::Add<Output=T>>(x: T, y: T) -> T {
+//     x + y
+// }
+
+fn sum<T>(x: T, y: T) -> T 
+where
+    T: ops::Add<Output=T>,
+{
+  x + y
 }
 ```
 8. 🌟🌟
@@ -373,6 +404,7 @@ impl<T: std::fmt::Debug + PartialOrd> Pair<T> {
     }
 }
 
+#[derive(Debug, PartialOrd, PartialEq)]
 struct Unit(i32);
 
 fn main() {
@@ -418,8 +450,8 @@ fn example1() {
     }
 
     let mut cacher = Cacher::new(|x| x+1);
-    assert_eq!(cacher.value(10), __);
-    assert_eq!(cacher.value(15), __);
+    assert_eq!(cacher.value(10), 11);
+    assert_eq!(cacher.value(15), 11);
 }
 
 
@@ -455,8 +487,8 @@ fn example2() {
     }
 
     let mut cacher = Cacher::new(|x| x+1);
-    assert_eq!(cacher.value(20), __);
-    assert_eq!(cacher.value(25), __);
+    assert_eq!(cacher.value(20), 21);
+    assert_eq!(cacher.value(25), 21);
 }
 
 
