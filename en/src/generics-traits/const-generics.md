@@ -82,10 +82,10 @@ fn main() {
             data: [1, 2, 3],
         },
         Array {
-            data: [1.0, 2.0, 3.0],
+            data: [1, 2, 3],
         },
         Array {
-            data: [1, 2]
+            data: [1, 2, 4]
         }
     ];
 
@@ -97,9 +97,11 @@ fn main() {
 ```rust,editable
 
 // Fill in the blanks to make it work.
-fn print_array<__>(__) {
+use std::fmt::Debug;
+fn print_array<T: Debug, const M: usize>(arr: [T; M]) {
     println!("{:?}", arr);
 }
+
 fn main() {
     let arr = [1, 2, 3];
     print_array(arr);
@@ -126,9 +128,9 @@ where
 fn main() {
     check_size([0u8; 767]); 
     check_size([0i32; 191]);
-    check_size(["hello你好"; __]); // Size of &str ?
-    check_size([(); __].map(|_| "hello你好".to_string()));  // Size of String?
-    check_size(['中'; __]); // Size of char ?
+    check_size(["hello你好"; 47]); // Size of &str 2 words -> 16 bytes. 767/16 = 47?
+    check_size([(); 31].map(|_| "hello你好".to_string()));  // Size of String? 3 words cap/size/pointer to heap. 24 bytes/. 767/24 = 31
+    check_size(['中'; 191]); // Size of char ?
 
     println!("Success!");
 }
