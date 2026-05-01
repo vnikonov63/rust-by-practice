@@ -19,15 +19,15 @@ fn generic<T>(_s: SGen<T>) {}
 
 fn main() {
     // Using the non-generic functions
-    reg_fn(__);          // Concrete type.
-    gen_spec_t(__);   // Implicitly specified type parameter `A`.
-    gen_spec_i32(__); // Implicitly specified type parameter `i32`.
+    reg_fn(S(A));          // Concrete type.
+    gen_spec_t(SGen(A));   // Implicitly specified type parameter `A`.
+    gen_spec_i32(SGen(123)); // Implicitly specified type parameter `i32`.
 
     // Explicitly specified type parameter `char` to `generic()`.
-    generic::<char>(__);
+    generic::<char>(SGen('c'));
 
     // Implicitly specified type parameter `char` to `generic()`.
-    generic(__);
+    generic(SGen('c'));
 
     println!("Success!");
 }
@@ -37,7 +37,11 @@ fn main() {
 ```rust,editable
 
 // Implement the generic function below.
-fn sum
+use std::ops::Add;
+
+fn sum<T: Add<Output=T>>(a: T, b: T) -> T {
+   a + b
+}
 
 fn main() {
     assert_eq!(5, sum(2i8, 3i8));
@@ -55,7 +59,10 @@ fn main() {
 ```rust,editable
 
 // Implement struct Point to make it work.
-
+struct Point<T> {
+  x: T,
+  y: T
+}
 
 fn main() {
     let integer = Point { x: 5, y: 10 };
@@ -69,9 +76,9 @@ fn main() {
 ```rust,editable
 
 // Modify this struct to make the code work
-struct Point<T> {
+struct Point<T, V> {
     x: T,
-    y: T,
+    y: V,
 }
 
 fn main() {
@@ -86,12 +93,13 @@ fn main() {
 ```rust,editable
 
 // Add generic for Val to make the code work, DON'T modify the code in `main`.
-struct Val {
-    val: f64,
+
+struct Val<T> {
+    val: T,
 }
 
-impl Val {
-    fn value(&self) -> &f64 {
+impl<T> Val<T> {
+    fn value(&self) -> &T {
         &self.val
     }
 }
@@ -114,8 +122,13 @@ struct Point<T, U> {
 }
 
 impl<T, U> Point<T, U> {
-    // Implement mixup to make it work, DON'T modify other code.
-    fn mixup
+  // we need ownership here 
+    fn mixup<V,W>(self, input: Point<V, W>) -> Point<T, W> {
+        Point {
+            x: self.x,
+            y: input.y,
+        }
+    }
 }
 
 fn main() {
@@ -147,7 +160,7 @@ impl Point<f32> {
 }
 
 fn main() {
-    let p = Point{x: 5, y: 10};
+    let p = Point{x: 5_f32, y: 10_f32};
     println!("{}",p.distance_from_origin());
 }
 ```
