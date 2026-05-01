@@ -40,7 +40,7 @@ impl Bird for Swan {
 
 fn main() {
     // FILL in the blank.
-    let duck = __;
+    let duck = Duck{};
     duck.swim();
 
     let bird = hatch_a_bird(2);
@@ -59,7 +59,13 @@ fn main() {
 }   
 
 // IMPLEMENT this function.
-fn hatch_a_bird...
+fn hatch_a_bird(id: u8) -> Box<dyn Bird> {
+    if id == 2 {
+    Box::new(Duck{})
+  } else {
+    Box::new(Swan{})
+  }
+}
 
 ```
 ## Array with trait objects
@@ -96,7 +102,7 @@ impl Bird for Swan {
 
 fn main() {
     // FILL in the blank to make the code work.
-    let birds __;
+    let birds: [Box<dyn Bird>; 4] = [Box::new(Duck{}), Box::new(Swan{}), Box::new(Swan{}), Box::new(Duck{})] ;
 
     for bird in birds {
         bird.quack();
@@ -135,20 +141,20 @@ fn main() {
     let y = 8u8;
 
     // Draw x.
-    draw_with_box(__);
+    println!("{}", draw_with_box(Box::new(x)));
 
     // Draw y.
-    draw_with_ref(&y);
+    println!("{}", draw_with_ref(&y));
 
     println!("Success!");
 }
 
-fn draw_with_box(x: Box<dyn Draw>) {
-    x.draw();
+fn draw_with_box(x: Box<dyn Draw>) -> String {
+    x.draw()
 }
 
-fn draw_with_ref(x: __) {
-    x.draw();
+fn draw_with_ref(x: &dyn Draw) -> String {
+    x.draw()
 }
 ```
 
@@ -175,10 +181,14 @@ impl Foo for String {
 }
 
 // IMPLEMENT below with generics.
-fn static_dispatch...
+fn static_dispatch<T: Foo>(i: T) {
+    i.method();
+}
 
 // Implement below with trait objects.
-fn dynamic_dispatch...
+fn dynamic_dispatch(i: &dyn Foo) {
+    i.method();
+}
 
 fn main() {
     let x = 5u8;
@@ -202,19 +212,44 @@ You can only make object-safe traits into trait objects. A trait is object safe 
 
 // Use at least two approaches to make it work.
 // DON'T add/remove any code line.
+
+// trait MyTrait {
+//     fn f(&self) -> Self;
+// }
+//
+// impl MyTrait for u32 {
+//     fn f(&self) -> u32 { 42 }
+// }
+//
+// impl MyTrait for String {
+//     fn f(&self) -> String { self.clone() }
+// }
+//
+// fn my_function(x: impl MyTrait) -> impl MyTrait {
+//     x.f()
+// }
+//
+// fn main() {
+//     my_function(13_u32);
+//     my_function(String::from("abc"));
+//
+//     println!("Success!");
+// }
+
+
 trait MyTrait {
-    fn f(&self) -> Self;
+    fn f(&self) -> Box<dyn MyTrait>;
 }
 
 impl MyTrait for u32 {
-    fn f(&self) -> Self { 42 }
+    fn f(&self) -> Box<dyn MyTrait> { Box::new(42) }
 }
 
 impl MyTrait for String {
-    fn f(&self) -> Self { self.clone() }
+    fn f(&self) -> Box<dyn MyTrait> { Box::new(self.clone()) }
 }
 
-fn my_function(x: Box<dyn MyTrait>)  {
+fn my_function(x: Box<dyn MyTrait>) -> Box<dyn MyTrait> {
     x.f()
 }
 
