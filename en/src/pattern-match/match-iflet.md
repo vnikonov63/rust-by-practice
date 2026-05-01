@@ -16,10 +16,10 @@ fn main() {
     let dire = Direction::South;
     match dire {
         Direction::East => println!("East"),
-        __  => { // Matching South or North here
+        Direction::South | Direction::North => { // Matching South or North here
             println!("South or North");
         },
-        _ => println!(__),
+        _ => println!("West"),
     };
 }
 ```
@@ -34,7 +34,10 @@ fn main() {
     //
     // boolean = true => binary = 1
     // boolean = false =>  binary = 0
-    let binary = __;
+    let binary = match boolean {
+      true => 1,
+      false => 0
+    };
 
     assert_eq!(binary, 1);
 
@@ -69,15 +72,15 @@ fn main() {
 
 fn show_message(msg: Message) {
     match msg {
-        __ => { // match  Message::Move
-            assert_eq!(a, 1);
-            assert_eq!(b, 3);
-        },
-        Message::ChangeColor(_, g, b) => {
-            assert_eq!(g, __);
-            assert_eq!(b, __);
-        }
-        __ => println!("no data in these variants")
+    Message::Move{x: a, y: b} => { // match  Message::Move
+        assert_eq!(a, 1);
+        assert_eq!(b, 3);
+    },
+    Message::ChangeColor(_, g, b) => {
+        assert_eq!(g, 255);
+        assert_eq!(b, 0);
+    }
+    _ => println!("no data in these variants")
     }
 }
 ```
@@ -93,7 +96,7 @@ fn main() {
 
     // Fill the blank with `matches!` to make the code work
     for ab in alphabets {
-        assert!(__)
+        assert!(matches!(ab, 'A'..='Z' | 'a'..='z' | '0'..='9'));
     }
 
     println!("Success!");
@@ -113,7 +116,7 @@ fn main() {
 
     let v = vec![MyEnum::Foo,MyEnum::Bar,MyEnum::Foo];
     for e in v {
-        if e == MyEnum::Foo { // Fix the error by changing only this line
+        if matches!(e, MyEnum::Foo) { // Fix the error by changing only this line
             count += 1;
         }
     }
@@ -133,15 +136,9 @@ For some cases, when matching enums, `match` is too heavy. We can use `if let` i
 fn main() {
     let o = Some(7);
 
-    // Remove the whole `match` block, using `if let` instead 
-    match o {
-        Some(i) => {
-            println!("This is a really long string and `{:?}`", i);
-
-            println!("Success!");
-        }
-        _ => {}
-    };
+    if let Some(i) = o {
+        println!("This is a really long string and `{:?}`", i);
+    }
 }
 ```
 
@@ -156,10 +153,8 @@ enum Foo {
 fn main() {
     let a = Foo::Bar(1);
 
-    __ {
+    if let Foo::Bar(i) = a {
         println!("foobar holds the value: {}", i);
-
-        println!("Success!");
     }
 }
 ```
@@ -176,14 +171,11 @@ enum Foo {
 fn main() {
     let a = Foo::Qux(10);
 
-    // Remove the codes below, using `match` instead 
-    if let Foo::Bar = a {
-        println!("match foo::bar")
-    } else if let Foo::Baz = a {
-        println!("match foo::baz")
-    } else {
-        println!("match others")
-    }
+  match a {
+    Foo::Bar => println!("match foo::bar"),
+    Foo::Baz => println!("match foo::baz"),
+    _ => println!("match others")
+  }
 }
 ```
 
@@ -195,7 +187,7 @@ fn main() {
 fn main() {
     let age = Some(30);
     if let Some(age) = age { // Create a new variable with the same name as previous `age`
-       assert_eq!(age, Some(30));
+       assert_eq!(age, 30);
     } // The new variable `age` goes out of scope here
     
     match age {
