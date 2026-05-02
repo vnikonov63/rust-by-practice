@@ -20,7 +20,10 @@ fn main() {
     
     // In code below, v is Vec<[u8; 3]> , not Vec<u8>
     // USE Vec::new and `for` to rewrite the below code 
-    let v1 = vec!(arr);
+    let mut v1 = Vec::new();
+    for i in &v {
+      v1.push(*i);
+    }
     is_vec(&v1);
  
     assert_eq!(v, v1);
@@ -43,7 +46,7 @@ fn main() {
     v1.push(3);
     
     let mut v2 = Vec::new();
-    v2.__;
+    v2.extend(v1.clone());
 
     assert_eq!(v1, v2);
 
@@ -60,8 +63,8 @@ fn main() {
     // Array -> Vec
     // impl From<[T; N]> for Vec
     let arr = [1, 2, 3];
-    let v1 = __(arr);
-    let v2: Vec<i32> = arr.__();
+    let v1 = Vec::from(arr);
+    let v2: Vec<i32> = arr.into();
  
     assert_eq!(v1, v2);
  
@@ -69,7 +72,8 @@ fn main() {
     // String -> Vec
     // impl From<String> for Vec
     let s = "hello".to_string();
-    let v1: Vec<u8> = s.__();
+    // let v1: Vec<u8> = s.chars().map(|c| c as u8).collect();
+    let v1: Vec<u8> = s.into();
 
     let s = "hello".to_string();
     let v2 = s.into_bytes();
@@ -77,7 +81,7 @@ fn main() {
 
     // impl<'_> From<&'_ str> for Vec
     let s = "hello";
-    let v3 = Vec::__(s);
+    let v3 = Vec::from(s);
     assert_eq!(v2, v3);
 
     println!("Success!");
@@ -90,13 +94,13 @@ fn main() {
 
 // FIX the error and IMPLEMENT the code
 fn main() {
-    let mut v = Vec::from([1, 2, 3]);
+    let mut v = Vec::from([1, 2, 3, 4, 5]);
     for i in 0..5 {
         println!("{:?}", v[i])
     }
 
     for i in 0..5 {
-       // IMPLEMENT the code here...
+        v[i] += 1;
     }
     
     assert_eq!(v, vec![2, 3, 4, 5, 6]);
@@ -121,7 +125,7 @@ fn main() {
     let slice1 = &v[..];
     // Out of bounds will cause a panic
     // You must use `v.len` here
-    let slice2 = &v[0..4];
+    let slice2 = &v[0..3];
     
     assert_eq!(slice1, slice2);
     
@@ -130,7 +134,7 @@ fn main() {
     // Note: slice and &Vec are different
     let vec_ref: &mut Vec<i32> = &mut v;
     (*vec_ref).push(4);
-    let slice3 = &mut v[0..3];
+    let slice3 = &mut v[0..4];
     slice3[3] = 42;
 
     assert_eq!(slice3, &[1, 2, 3, 42]);
@@ -151,15 +155,15 @@ fn main() {
     let mut vec = Vec::with_capacity(10);
 
     // The vector contains no items, even though it has capacity for more
-    assert_eq!(vec.len(), __);
+    assert_eq!(vec.len(),0);
     assert_eq!(vec.capacity(), 10);
 
     // These are all done without reallocating...
     for i in 0..10 {
         vec.push(i);
     }
-    assert_eq!(vec.len(), __);
-    assert_eq!(vec.capacity(), __);
+    assert_eq!(vec.len(), 10);
+    assert_eq!(vec.capacity(), 10);
 
     // ...but this may make the vector reallocate
     vec.push(11);
@@ -168,13 +172,13 @@ fn main() {
 
 
     // Fill in an appropriate value to make the `for` done without reallocating 
-    let mut vec = Vec::with_capacity(__);
+    let mut vec = Vec::with_capacity(100);
     for i in 0..100 {
         vec.push(i);
     }
 
-    assert_eq!(vec.len(), __);
-    assert_eq!(vec.capacity(), __);
+    assert_eq!(vec.len(), 100);
+    assert_eq!(vec.capacity(), 100);
     
     println!("Success!");
 }
@@ -192,14 +196,15 @@ But we can use enums or trait objects to store distinct types.
 
 7. 🌟🌟
 ```rust,editable
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum IpAddr {
     V4(String),
     V6(String),
 }
 fn main() {
     // FILL in the blank
-    let v : Vec<IpAddr>= __;
+    // let v : Vec<IpAddr> = Vec::from([IpAddr::V4(String::from("127.0.0.1")), IpAddr::V6(String::from("::1"))]);
+    let v: Vec<IpAddr> = vec![IpAddr::V4("127.0.0.1".to_string()), IpAddr::V6("::1".to_string())];
     
     // Comparing two enums need to derive the PartialEq trait
     assert_eq!(v[0], IpAddr::V4("127.0.0.1".to_string()));
@@ -230,7 +235,7 @@ impl IpAddr for V6 {
 
 fn main() {
     // FILL in the blank
-    let v: __= vec![
+    let v: Vec<Box<dyn IpAddr>> = vec![
         Box::new(V4("127.0.0.1".to_string())),
         Box::new(V6("::1".to_string())),
     ];
