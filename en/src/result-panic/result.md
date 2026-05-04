@@ -12,7 +12,7 @@ In short words, the expected outcome is `Ok`, while the unexpected outcome is `E
 // FILL in the blanks and FIX the errors
 use std::num::ParseIntError;
 
-fn multiply(n1_str: &str, n2_str: &str) -> __ {
+fn multiply(n1_str: &str, n2_str: &str) -> Result<i32, ParseIntError> {
     let n1 = n1_str.parse::<i32>();
     let n2 = n2_str.parse::<i32>();
     Ok(n1.unwrap() * n2.unwrap())
@@ -20,10 +20,10 @@ fn multiply(n1_str: &str, n2_str: &str) -> __ {
 
 fn main() {
     let result = multiply("10", "2");
-    assert_eq!(result, __);
+    assert_eq!(result, Ok(20));
 
-    let result = multiply("t", "2");
-    assert_eq!(result.__, 8);
+    let result = multiply("4", "2");
+    assert_eq!(result.unwrap(), 8);
 
     println!("Success!");
 }
@@ -39,7 +39,11 @@ use std::num::ParseIntError;
 
 // IMPLEMENT multiply with ?
 // DON'T use unwrap here
-fn multiply(n1_str: &str, n2_str: &str) -> __ {
+fn multiply(n1_str: &str, n2_str: &str) -> Result<i32, ParseIntError> {
+    let n1 = n1_str.parse::<i32>()?;
+    let n2 = n2_str.parse::<i32>()?;
+
+    Ok(n1 * n2)
 }
 
 fn main() {
@@ -73,7 +77,7 @@ fn read_file1() -> Result<String, io::Error> {
 fn read_file2() -> Result<String, io::Error> {
     let mut s = String::new();
 
-    __;
+    File::open("hello.txt")?.read_to_string(&mut s)?;
 
     Ok(s)
 }
@@ -94,7 +98,8 @@ use std::num::ParseIntError;
 
 // FILL in the blank in two ways: map, and then
 fn add_two(n_str: &str) -> Result<i32, ParseIntError> {
-   n_str.parse::<i32>().__
+   // n_str.parse::<i32>().map(|el| el + 2)
+  n_str.parse::<i32>().and_then(|num| Ok(num + 2))
 }
 
 fn main() {
@@ -127,7 +132,17 @@ fn multiply(n1_str: &str, n2_str: &str) -> Result<i32, ParseIntError> {
 // Rewriting `multiply` to make it succinct
 // You should use BOTH of  `and_then` and `map` here.
 fn multiply1(n1_str: &str, n2_str: &str) -> Result<i32, ParseIntError> {
-    // IMPLEMENT...
+   n1_str.parse::<i32>().and_then(|n1| {
+      n2_str.parse::<i32>().map(|n2| n1 * n2)
+  })
+}
+
+// We should never write anything close to what is above, just use this:
+fn multiply2(n1_str: &str, n2_str: &str) -> Result<i32, ParseIntError> {
+    let n1 = n1_str.parse::<i32>()?;
+    let n2 = n2_str.parse::<i32>()?;
+
+    Ok(n1 * n2)
 }
 
 fn print(result: Result<i32, ParseIntError>) {
@@ -160,7 +175,7 @@ At a module level, creating aliases can be particularly helpful. Errors found in
 use std::num::ParseIntError;
 
 // FILL in the blank
-type __;
+type Res<T> = Result<T, ParseIntError>;
 
 // Use the above alias to refer to our specific `Result` type.
 fn multiply(first_number_str: &str, second_number_str: &str) -> Res<i32> {
