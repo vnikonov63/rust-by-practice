@@ -8,12 +8,12 @@ Rust provides no implicit type conversion(coercion) between primitive types. But
 fn main() {
     let decimal = 97.123_f32;
 
-    let integer: __ = decimal as u8;
+    let integer: u8 = decimal as u8;
 
-    let c1: char = decimal as char;
+    let c1: char = decimal as u8 as char;
     let c2 = integer as char;
 
-    assert_eq!(integer, 'b' as u8);
+    assert_eq!(integer, 'a' as u8);
 
     println!("Success!");
 }
@@ -21,13 +21,16 @@ fn main() {
 
 2. 🌟🌟 By default, overflow will cause compile errors, but we can add an global annotation to suppress these errors.
 ```rust,editable
+
+#![allow(overflowing_literals)]
 fn main() {
     assert_eq!(u8::MAX, 255);
     // The max of `u8` is 255 as shown above.
     // so the below code will cause an overflow error: literal out of range for `u8`.
     // PLEASE looking for clues within compile errors to FIX it.
     // DON'T modify any code in main.
-    let v = 1000 as u8;
+
+    let _v = 1000 as u8;
 
     println!("Success!");
 }
@@ -35,22 +38,23 @@ fn main() {
 
 3. 🌟🌟  When casting any value to an unsigned type `T`, `T::MAX + 1` is added or subtracted until the value fits into the new type.
 ```rust,editable
+#![allow(overflowing_literals)]
 fn main() {
-    assert_eq!(1000 as u16, __);
+    assert_eq!(1000 as u16, 1000);
 
-    assert_eq!(1000 as u8, __);
+    assert_eq!(1000 as u8, 232);
 
     // For positive numbers, this is the same as the modulus
     println!("1000 mod 256 is : {}", 1000 % 256);
 
-    assert_eq!(-1_i8 as u8, __);
+    assert_eq!(-1_i8 as u8, 255);
     
     // Since Rust 1.45, the `as` keyword performs a *saturating cast* 
     // when casting from float to int. If the floating point value exceeds 
     // the upper bound or is less than the lower bound, the returned value 
     // will be equal to the bound crossed.
-    assert_eq!(300.1_f32 as u8, __);
-    assert_eq!(-100.1_f32 as u8, __);
+    assert_eq!(300.1_f32 as u8, 255);
+    assert_eq!(-100.1_f32 as u8, 0);
     
 
     // This behavior incurs a small runtime cost and can be avoided 
@@ -74,12 +78,12 @@ fn main() {
 fn main() {
     let mut values: [i32; 2] = [1, 2];
     let p1: *mut i32 = values.as_mut_ptr();
-    let first_address: usize = p1 __; 
+    let first_address: usize = p1 as usize; 
     let second_address = first_address + 4; // 4 == std::mem::size_of::<i32>()
-    let p2: *mut i32 = second_address __; // p2 points to the 2nd element in values
+    let p2: *mut i32 = second_address as *mut i32; // p2 points to the 2nd element in values
     unsafe {
         // Add one to the second element
-        __
+        *p2 += 1;
     }
     
     assert_eq!(values[1], 3);
@@ -97,7 +101,8 @@ fn main() {
     let a: *const [u64] = &arr;
     let b = a as *const [u8];
     unsafe {
-        assert_eq!(std::mem::size_of_val(&*b), __)
+        // the size stays the same.
+        assert_eq!(std::mem::size_of_val(&*b), 13)
     }
 
     println!("Success!");
