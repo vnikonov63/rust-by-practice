@@ -29,10 +29,20 @@ library crate root
 
 ```rust,editable
 // FILL in the blank
-// in __.rs
+// in lib.rs
 
 mod front_of_house {
-    // IMPLEMENT this module..
+    mod hosting {
+        fn add_to_waitlist()
+        fn seat_at_table()
+    } 
+    
+    mod serving {
+        fn take_order()
+        fn serve_order()
+        fn take_payment()
+        fn complain()
+    }
 }
 ```
 
@@ -50,10 +60,10 @@ mod front_of_house {
 
 pub fn eat_at_restaurant() {
     // Call add_to_waitlist with **absolute path**:
-    __::add_to_waitlist();
+    crate::front_of_house::hosting::add_to_waitlist();
 
     // Call with **relative path** 
-     __::add_to_waitlist();
+    front_of_house::hosting::add_to_waitlist();
 }
 ```
 
@@ -67,7 +77,8 @@ mod back_of_house {
         // FILL in the blank in three ways
         //1. using keyword `super`
         //2. using absolute path
-        __::serve_order();
+        //1. super::front_of_house::serving::serve_order();
+        crate::front_of_house::serving::serve_order();
     }
 
     fn cook_order() {}
@@ -134,33 +145,55 @@ pub mod back_of_house {
 
 ```rust,editable
 // In src/lib.rs
+pub mod back_of_house
+pub mod front_of_house
 
-// IMPLEMENT...
+pub fn eat_at_restaurant() -> String {
+    front_of_house::hosting::add_to_waitlist();
+    
+    back_of_house::cook_order();
+
+    String::from("yummy yummy!")
+}
+```
+
+```
 ```
 
 ```rust,editable
 // In src/back_of_house.rs
-
 // IMPLEMENT...
+pub fn fix_incorrect_order() {
+    cook_order();
+    crate::front_of_house::serving::serve_order();
+}
+
+pub fn cook_order() {}
 ```
 
 
 ```rust,editable
 // In src/front_of_house/mod.rs
-
 // IMPLEMENT...
+pub mod hosting;
+pub mod serving;
 ```
 
 ```rust,editable
 // In src/front_of_house/hosting.rs
+pub fn add_to_waitlist() {}
 
-// IMPLEMENT...
+pub fn seat_at_table() -> String {
+    String::from("sit down please")
+}
 ```
 
 ```rust,editable
 // In src/front_of_house/serving.rs
-
-// IMPLEMENT...
+pub fn take_order() {}
+pub fn serve_order() {}
+pub fn take_payment() {}
+fn complain() {} 
 ```
 
 ### Accessing code in library crate from binary crate
@@ -184,11 +217,10 @@ You should have below structures and the corresponding codes in them when reachi
 
 ```rust,editable
 // In src/main.rs
-
-// FILL in the blank and FIX the errors
 fn main() {
-    assert_eq!(__, "sit down please");
-    assert_eq!(__,"yummy yummy!");
+    // it can't be crate::front_of_house, as we are inside a different "crate", but within the same package. 
+    assert_eq!(hello-package::front_of_house::seat_at_table(), "sit down please");
+    assert_eq!(hello-package::eat_at_restaurant(),"yummy yummy!");
 }
 ```
 
