@@ -2,8 +2,8 @@
 1. 🌟 We can bring two types of the same name into the same scope with use, but you need `as` keyword.
 
 ```rust,editable
-use std::fmt::Result;
-use std::io::Result;
+use std::fmt::Result as FmtResult;
+use std::io::Result as IoResult;
 
 fn main() {}
 ```
@@ -14,7 +14,9 @@ fn main() {}
 
 // FILL in the blank in two ways
 // DON'T add new code line
-use std::collections::__;
+use std::collections::{HashSet, HashMap, BTreeMap};
+// also can do:
+// use std::collections::*;
 
 fn main() {
     let _c1:HashMap<&str, i32> = HashMap::new();
@@ -27,6 +29,12 @@ fn main() {
 ### Re-exporting names with `pub use`
 3. 🌟🌟🌟 In our recently created package `hello-package`, add something to make the below code work
 ```rust,editable
+// in here we originally had hello_package::front_of_house::seat_at_table()
+// We want to remove the second bit 
+// For that we need to move the hosting inside the lib.rs 
+// an we can do so with 
+// pub use crate::front_of_house::hosing
+// the lib.rs is the point of entry for the stuff outside the only library crate inside the package. 
 fn main() {
     assert_eq!(hello_package::hosting::seat_at_table(), "sit down please");
      assert_eq!(hello_package::eat_at_restaurant(),"yummy yummy!");
