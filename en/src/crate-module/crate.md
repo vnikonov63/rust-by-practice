@@ -2,6 +2,7 @@
 A package is a project which you create with Cargo (in most cases), so it contains a `Cargo.toml` file in it.
 
 1. 🌟 Create a package  with below layout:
+`cargo new hello-package`
 ```shell
 .
 ├── Cargo.toml
@@ -22,6 +23,7 @@ edition = "2021"
 > Note! We will use this package across the whole chapter as a practice project.
 
 2. 🌟 Create a package with below layout:
+`cargo new --lib hello-package1`
 ```shell
 .
 ├── Cargo.toml
@@ -46,7 +48,7 @@ edition = "2021"
 /* FILL in the blank with your ANSWER */
 
 // Q: What's the difference between package number 1 and number 2?
-// A: __
+// A: One is a library and the other one is a binary.
 ```
 
 
@@ -62,7 +64,7 @@ Similar to `hello-package`, `hello-package1` also has a crate in it, however, th
 /* FILL in the blank with your ANSWER */
 
 // Q: What's the name of the library crate in package `hello-package1`?
-// A: __
+// A: hello-package1 
 ```
 
 
@@ -73,8 +75,8 @@ Similar to `hello-package`, `hello-package1` also has a crate in it, however, th
 ├── Cargo.lock
 ├── Cargo.toml
 ├── src
-│   ├── __
-│   └── __
+│   ├── main.rs
+│   └── lib.rs 
 ```
 
 After this step, there should be two crates in package `hello-package`: **a binary crate and a library crate, both with the same name as the package**.
@@ -90,11 +92,11 @@ After this step, there should be two crates in package `hello-package`: **a bina
 ├── Cargo.toml
 ├── Cargo.lock
 ├── src
-│   ├── __
-│   ├── __
-│   └── __
-│       └── __
-│       └── __
+│   ├── main.rs
+│   ├── lib.rs  
+│   └── bin
+│       └── main1.rs 
+│       └── main2.rs 
 ├── tests # directory for integrated tests files
 │   └── some_integration_tests.rs
 ├── benches # dir for benchmark files
