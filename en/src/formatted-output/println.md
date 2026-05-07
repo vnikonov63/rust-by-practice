@@ -17,7 +17,7 @@ All parse text in the same fashion. As a plus, Rust checks format correctness at
 fn main() {
     let s1 = "hello";
     /* Fill in the blank */
-    let s = format!(__);
+    let s = format!("{s1}, world!");
     assert_eq!(s, "hello, world!");
 }
 ```
@@ -31,9 +31,9 @@ fn main() {
    Hello world, I am 
    Sunface!
    */
-   __("hello world, ");
-   __("I am");
-   __("Sunface!");
+   print!("hello world, ");
+   println!("I am");
+   println!("Sunface!");
 }
 ```
 
