@@ -22,22 +22,31 @@ struct DebugPrintable(i32);
 ```rust,editable
 
 /* Fill in the blanks and Fix the errors */
+#[derive(Debug)]
 struct Structure(i32);
 
 fn main() {
     // Types in std and Rust have implemented the fmt::Debug trait
-    println!("__ months in a year.", 12);
+    println!("{} months in a year.", 12);
 
-    println!("Now __ will print!", Structure(3));
+    println!("Now {:?} will print!", Structure(3));
 }
 ```
 
 2. 🌟🌟 So `fmt::Debug` definitely makes one type printable, but sacrifices some elegance. Maybe we can get more elegant by replacing `{:?}` with something else( but not `{}` !) 
 ```rust,editable
+use std::fmt;
+
 #[derive(Debug)]
 struct Person {
     name: String,
     age: u8
+}
+
+impl fmt::Display for Person {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+      write!(f, "Person {{\n    name: \"{0}\",\n    age: \"{1}\",\n}}", self.name, self.age)
+  }
 }
 
 fn main() {
@@ -49,18 +58,26 @@ fn main() {
         age: 18,
     }
     */
-    println!("{:?}", person);
+    println!("{}", person);
 }
 ```
 
 3. 🌟🌟 We can also manually implement `Debug` trait for our types
 ```rust,editable
 
+use std::fmt::Debug as DebugTrait; 
+use std::fmt::{Formatter, Result};
+
 #[derive(Debug)]
 struct Structure(i32);
 
-#[derive(Debug)]
 struct Deep(Structure);
+
+impl DebugTrait for Deep {
+  fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+    write!(f, "{:?}", self.0.0)
+  }
+}
 
 
 fn main() {    
@@ -91,11 +108,15 @@ struct Point2D {
 }
 
 impl fmt::Display for Point2D {
-    /* Implement.. */
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Display: {0} + {1}i", self.x, self.y)
+    }
 }
 
 impl fmt::Debug for Point2D {
-    /* Implement.. */
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Debug: Complex {{ real: {0}, imag: {1} }}", self.x, self.y)
+    }
 }
 
 fn main() {
@@ -136,7 +157,7 @@ impl fmt::Display for List {
             // For every element except the first, add a comma.
             // Use the ? operator to return on errors.
             if count != 0 { write!(f, ", ")?; }
-            write!(f, "{}", v)?;
+            write!(f, "{0}: {1}", count, v)?;
         }
 
         // Close the opened bracket and return a fmt::Result value.
