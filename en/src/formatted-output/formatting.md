@@ -7,7 +7,7 @@
 /* Fill in the blanks */
 fn main() {
     println!("{0}, this is {1}. {1}, this is {0}", "Alice", "Bob"); // => Alice, this is Bob. Bob, this is Alice
-    assert_eq!(format!("{1}{0}", 1, 2), __);
+    assert_eq!(format!("{1}{0}", 1, 2), "21");
     assert_eq!(format!("{2}{1}{1}{2}", 1, 2), "2112");
     println!("Success!");
 }
@@ -20,13 +20,13 @@ fn main() {
 fn main() {
     println!("{argument}", argument = "test"); // => "test"
 
-    /* Fill in the blanks */
-    assert_eq!(format!("{name}{}", 1, __), "21");
-    assert_eq!(format!(__,a = "a", b = 'b', c = 3 ), "a 3 b");
+    /* Fill in the blanks */ 
+    assert_eq!(format!("{name}{}", 1, name=2), "21");
+    assert_eq!(format!("{a} {c} {b}",a = "a", b = 'b', c = 3 ), "a 3 b");
     
     /* Fix the error */
     // Named argument must be placed after other arguments
-    println!("{abc} {1}", abc = "def", 2);
+    println!("{abc} {0}", 2, abc = "def");
 
     println!("Success!");
 }
@@ -41,9 +41,12 @@ fn main() {
     println!("Hello {:5}!", "x"); // =>  "Hello x    !"  
     println!("Hello {:1$}!", "x", 5); // =>  "Hello x    !"
 
-    /* Fill in the blanks */
-    assert_eq!(format!("Hello __!", 5, "x"), "Hello x    !");
-    assert_eq!(format!("Hello __!", "x", width = 5), "Hello x    !");
+    /* Fill in the blanks */ 
+
+    // print argument 1 using argument 0 as the width
+    assert_eq!(format!("Hello {1:0$}!", 5, "x"), "Hello x    !");
+    // 
+    assert_eq!(format!("Hello {:width$}!", "x", width = 5), "Hello x    !");
 
     println!("Success!");
 }
@@ -55,12 +58,12 @@ fn main() {
     // Left align
     println!("Hello {:<5}!", "x"); // => Hello x    !
     // Right align
-    assert_eq!(format!("Hello __!", "x"), "Hello     x!");
+    assert_eq!(format!("Hello {:>5}!", "x"), "Hello     x!");
     // Center align
-    assert_eq!(format!("Hello __!", "x"), "Hello   x  !");
+    assert_eq!(format!("Hello {:^5}!", "x"), "Hello   x  !");
 
     // Left align, pad with '&'
-    assert_eq!(format!("Hello {:&<5}!", "x"), __);
+    assert_eq!(format!("Hello {:&<5}!", "x"), "Hello x&&&&!");
 
     println!("Success!");
 }
@@ -75,7 +78,7 @@ fn main() {
     println!("Hello {:05}!", -5); // => Hello -0005!
 
     /* Fill in the blank */
-    assert!(format!("{number:0>width$}", number=1, width=6) == __);
+    assert!(format!("{number:0>width$}", number=1, width=6) == "000001");
     
     println!("Success!")
 ;}
@@ -91,9 +94,9 @@ fn main() {
 
     println!("{:.1$}", v, 4); // same as {:.4} => 3.1416 
 
-    assert_eq!(format!("__", v), "3.14");
-    assert_eq!(format!("__", v), "+3.14");
-    assert_eq!(format!("__", v), "3");
+    assert_eq!(format!("{:.2}", v), "3.14");
+    assert_eq!(format!("{:+.2}", v), "+3.14");
+    assert_eq!(format!("{:.0}", v), "3");
 
     println!("Success!");
 }
@@ -106,7 +109,7 @@ fn main() {
 
     println!("{0:.5}", s); // => Hello
 
-    assert_eq!(format!("Hello __!", 3, "abcdefg"), "Hello abc!");
+    assert_eq!(format!("Hello {1:.0$}!", 3, "abcdefg"), "Hello abc!");
 
     println!("Success!");
 }
@@ -121,10 +124,10 @@ fn main() {
 8.🌟🌟
 ```rust,editable
 fn main() {
-    assert_eq!(format!("__", 27), "0b11011");
-    assert_eq!(format!("__", 27), "0o33");
-    assert_eq!(format!("__", 27), "0x1b");
-    assert_eq!(format!("__", 27), "0x1B");
+    assert_eq!(format!("0b{:b}", 27), "0b11011");
+    assert_eq!(format!("0o{:o}", 27), "0o33");
+    assert_eq!(format!("0x{:x}", 27), "0x1b");
+    assert_eq!(format!("0x{:X}", 27), "0x1B");
 
     println!("{:x}!", 27); // Hex with no prefix => 1b
 
@@ -157,7 +160,7 @@ fn main() {
     jack: 60.3
     */
     for (name, score) in scores {
-        println!("{name}: __");
+        println!("{name}: {score:.1}");
     }
 }
 ```
